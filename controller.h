@@ -11,7 +11,7 @@ class controller {
 
     public:
         controller(){};
-        int run();
+        int run(int argc,char* argv[]);
 
 };
 
