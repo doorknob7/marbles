@@ -4,6 +4,7 @@
 #include "marbles.h"
 #include "action.h"
 #include "storage.h"
+#include "view.h"
 
 class controller {
 
