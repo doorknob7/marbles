@@ -3,14 +3,13 @@
 using namespace std;
 
 int controller::run(int argc, char* argv[]) {
-    cout << "controller running!" << std::endl;
+    
     view view;
     marbles marble;
     action action;
     storage storage;
     
-    // Test line: print all arguments passed into the CLI
-    cout << "Received " << argc << " argument(s):" << std::endl;
+    //cout << "Received " << argc << " argument(s):" << std::endl;
 
     if ((argc == 1) || (string(argv[1]) == "help")) {
         view.showHomeScreen();    
@@ -23,11 +22,11 @@ int controller::run(int argc, char* argv[]) {
     } else {
         cout << "invalid command" << endl;
         view.displayHelpMenu();
-
     }
     
-    for (int i = 1; i < argc; ++i) {
+    /*for (int i = 1; i < argc; ++i) {
             cout << "  argv[" << i << "]: " << argv[i] << std::endl;
-    }
+    }*/
+
     return 0;
 }
