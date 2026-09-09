@@ -1,29 +1,33 @@
 #include "controller.h"
 #include <iostream>
+using namespace std;
 
 int controller::run(int argc, char* argv[]) {
-    std::cout << "controller running!" << std::endl;
+    cout << "controller running!" << std::endl;
     view view;
+    marbles marble;
+    action action;
+    storage storage;
     
     // Test line: print all arguments passed into the CLI
-    std::cout << "Received " << argc << " argument(s):" << std::endl;
+    cout << "Received " << argc << " argument(s):" << std::endl;
 
-    if ((argc == 1) || (argc == 2 && std::string(argv[1]) == "help")) {
+    if ((argc == 1) || (string(argv[1]) == "help")) {
         view.showHomeScreen();    
+    } else if(string(argv[1])=="-log"){
+        action.registerAction();
+    } else if(string(argv[1])=="-jar"){
+        view.displayMarbleJar();
+    } else if(string(argv[1])=="-history"){
+        action.recallByDate();
     } else {
-        for (int i = 1; i < argc; ++i) {
-            std::cout << "  argv[" << i << "]: " << argv[i] << std::endl;
-        }
+        cout << "invalid command" << endl;
+        view.displayHelpMenu();
+
     }
     
-    marbles marble;
-    marble.handleMarbleFlags();
-
-    action action;
-    action.registerAction();
-
-    storage storage;
-    storage.saveData();
-
+    for (int i = 1; i < argc; ++i) {
+            cout << "  argv[" << i << "]: " << argv[i] << std::endl;
+    }
     return 0;
 }
