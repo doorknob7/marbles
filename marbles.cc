@@ -21,3 +21,12 @@ void marbles::handleMarbleFlags() {
     // note, will be done by day
 //saveData
 //loadData
+
+
+/*
+Category	        Task / Time Block	    Marble Value
+Programming	        First 30-minute block	0.5
+Every subsequent    30-minute block	        0.2
+Upkeep & Life Goals	Primary Upkeep	        0.3
+                    Secondary Upkeep        0.2
+*/
