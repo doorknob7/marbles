@@ -14,7 +14,7 @@ int controller::run(int argc, char* argv[]) {
     if ((argc == 1) || (string(argv[1]) == "help")) {
         view.showHomeScreen();    
     } else if(string(argv[1])=="-log"){
-        action.registerAction();
+        action.registerAction(argc, argv);
     } else if(string(argv[1])=="-jar"){
         view.displayMarbleJar();
     } else if(string(argv[1])=="-history"){
