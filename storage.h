@@ -12,8 +12,8 @@ class storage {
 
     public:
         storage(){};
-        void saveData();
-        void loadData();
+        void saveData(const nlohmann::json& data);
+        nlohmann::json loadData();
 
 
 };

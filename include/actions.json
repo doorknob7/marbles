@@ -1,0 +1,23 @@
+{
+    "habits": [
+        {
+            "name": "test1",
+            "repeatWorth": 0.0,
+            "repeatable": false,
+            "reward": 0.5
+        },
+        {
+            "name": "test1",
+            "repeatWorth": 0.2,
+            "repeatable": true,
+            "reward": 0.5
+        },
+        {
+            "name": "test3",
+            "repeatWorth": 0.2,
+            "repeatable": true,
+            "reward": 0.5
+        }
+    ],
+    "logs": []
+}

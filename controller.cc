@@ -8,6 +8,7 @@ int controller::run(int argc, char* argv[]) {
     marbles marble;
     action action;
     storage storage;
+    action.loadFromJson(storage.loadData());
     
     //cout << "Received " << argc << " argument(s):" << std::endl;
 

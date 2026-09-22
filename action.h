@@ -29,6 +29,8 @@ class action {
         void recallByDate();
         void getWeeklySummary();
         void deleteLoggedAction();
+        nlohmann::json toJson() const;
+        void loadFromJson(const nlohmann::json& data);
 
 
 };
