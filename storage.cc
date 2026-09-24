@@ -17,9 +17,7 @@ void storage::saveData(const nlohmann::json& data) {
     }
 
     savedData["habits"] = data.value("habits", nlohmann::json::array());
-    if (!savedData.contains("logs") || !savedData["logs"].is_array()) {
-        savedData["logs"] = nlohmann::json::array();
-    }
+    savedData["logs"] = data.value("logs", nlohmann::json::array());
 
     std::ofstream output(dataFile);
     if (output) {

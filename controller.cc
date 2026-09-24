@@ -9,17 +9,23 @@ int controller::run(int argc, char* argv[]) {
     action action;
     storage storage;
     action.loadFromJson(storage.loadData());
-    
-    //cout << "Received " << argc << " argument(s):" << std::endl;
 
     if ((argc == 1) || (string(argv[1]) == "help")) {
-        view.showHomeScreen();    
+        view.showHomeScreen(action.currentDayMarbles());
     } else if(string(argv[1])=="-log"){
         action.registerAction(argc, argv);
+    } else if(string(argv[1])=="-tasks"){
+        action.viewActionsWithRewards();
+    } else if(string(argv[1])=="-delete"){
+        action.deleteAction(argc, argv);
     } else if(string(argv[1])=="-jar"){
-        view.displayMarbleJar();
+        view.displayMarbleJar(action.currentDayMarbles());
     } else if(string(argv[1])=="-history"){
-        action.recallByDate();
+        if (argc >= 3) {
+            action.recallByDate(argv[2]);
+        } else {
+            action.recallByDate();
+        }
     } else {
         cout << "invalid command" << endl;
         view.displayHelpMenu();

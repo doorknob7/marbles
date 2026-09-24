@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <nlohmann/json.hpp>
 
 class view {
 
@@ -10,8 +11,8 @@ class view {
         
 
     public:
-        void displayMarbleJar() const;
-        void showHomeScreen() const;
+        void displayMarbleJar(const nlohmann::json& marbles = nlohmann::json::array()) const;
+        void showHomeScreen(const nlohmann::json& marbles = nlohmann::json::array()) const;
         void displayHelpMenu() const;
         void displayMessage(const std::string& message) const;
 
