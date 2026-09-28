@@ -4,9 +4,9 @@
 using namespace std;
 
 void view::drawJarFrame(const nlohmann::json& marbles, int startOffset, int count) const {
+    
     const int visibleMarbles = min(jarCapacity, count);
-
-    // 1. Top Lid
+    //jar lid
     cout << "         .-------------.\n";
 
     // 2. Top Curve Row (6 marbles: slots 94 to 99)

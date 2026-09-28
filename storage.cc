@@ -1,32 +1,26 @@
 #include "storage.h"
 #include <fstream>
+#include <cstdlib>
+#include <filesystem>
 
-namespace {
-const char* dataFile = "include/actions.json";
+std::string storage::getFilePath() const {
+    const char* home = std::getenv("HOME");
+    if (!home) return "actions.json";
+    
+    std::filesystem::path dir = std::filesystem::path(home) / ".marbles";
+    std::filesystem::create_directories(dir);
+    return (dir / "actions.json").string();
 }
 
 void storage::saveData(const nlohmann::json& data) {
-    nlohmann::json savedData = nlohmann::json::object();
-    std::ifstream input(dataFile);
-    if (input) {
-        try {
-            input >> savedData;
-        } catch (const nlohmann::json::parse_error&) {
-            savedData = nlohmann::json::object();
-        }
-    }
-
-    savedData["habits"] = data.value("habits", nlohmann::json::array());
-    savedData["logs"] = data.value("logs", nlohmann::json::array());
-
-    std::ofstream output(dataFile);
+    std::ofstream output(getFilePath());
     if (output) {
-        output << savedData.dump(4) << std::endl;
+        output << data.dump(4) << std::endl;
     }
 }
 
 nlohmann::json storage::loadData() {
-    std::ifstream input(dataFile);
+    std::ifstream input(getFilePath());
     if (!input) {
         return nlohmann::json{{"habits", nlohmann::json::array()},
                               {"logs", nlohmann::json::array()}};
@@ -37,7 +31,6 @@ nlohmann::json storage::loadData() {
         input >> data;
         return data;
     } catch (const nlohmann::json::parse_error&) {
-        std::cout << "unable to read saved data" << std::endl;
         return nlohmann::json{{"habits", nlohmann::json::array()},
                               {"logs", nlohmann::json::array()}};
     }
