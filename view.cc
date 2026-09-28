@@ -3,36 +3,111 @@
 
 using namespace std;
 
-void view::displayMarbleJar(const nlohmann::json& marbles) const {
-    static constexpr int jarWidth = 25;
-    static constexpr int jarHeight = 8;
-    const int marbleTotal = min(
-        jarWidth * jarHeight,
-        marbles.is_array() ? static_cast<int>(marbles.size()) : 0);
+void view::drawJarFrame(const nlohmann::json& marbles, int startOffset, int count) const {
+    const int visibleMarbles = min(jarCapacity, count);
 
-    cout << "          .------------.\n";
-    cout << "         /              \\\n";
-    for (int row = 0; row < jarHeight; ++row) {
-        cout << "        | ";
-        for (int column = 0; column < jarWidth; ++column) {
-            const int marbleIndex = (jarHeight - 1 - row) * jarWidth + column;
-            if (marbleIndex < marbleTotal) {
-                const nlohmann::json& marble = marbles[marbleIndex];
+    // 1. Top Lid
+    cout << "         .-------------.\n";
+
+    // 2. Top Curve Row (6 marbles: slots 94 to 99)
+    cout << "         / ";
+    for (int col = 0; col < 6; ++col) {
+        if (col > 0) cout << " ";
+        const int slotIndex = 94 + col;
+        if (slotIndex < visibleMarbles) {
+            const auto& marble = marbles[startOffset + slotIndex];
+            cout << "\033[38;2;" << marble.value("r", 120) << ";"
+                 << marble.value("g", 120) << ";" << marble.value("b", 120)
+                 << "mo\033[0m";
+        } else {
+            cout << " ";
+        }
+    }
+    cout << " \\\n";
+
+    // 3. Middle 11x8 Grid (88 marbles: slots 6 to 93, rendered top-to-bottom)
+    for (int row = 10; row >= 0; --row) {
+        cout << "        |";
+        for (int col = 0; col < 8; ++col) {
+            if (col > 0) cout << " ";
+            const int slotIndex = 6 + (row * 8) + col;
+            if (slotIndex < visibleMarbles) {
+                const auto& marble = marbles[startOffset + slotIndex];
                 cout << "\033[38;2;" << marble.value("r", 120) << ";"
                      << marble.value("g", 120) << ";" << marble.value("b", 120)
-                     << "m o\033[0m";
+                     << "mo\033[0m";
             } else {
-                cout << "  ";
+                cout << " ";
             }
         }
-        cout << " |\n";
+        cout << "|\n";
     }
-    cout << "         \\______________/\n";
-    cout << "          " << marbleTotal << " marbles today\n";
+
+    // 4. Bottom Curve Row (6 marbles: slots 0 to 5)
+    cout << "         \\ ";
+    for (int col = 0; col < 6; ++col) {
+        if (col > 0) cout << " ";
+        const int slotIndex = col;
+        if (slotIndex < visibleMarbles) {
+            const auto& marble = marbles[startOffset + slotIndex];
+            cout << "\033[38;2;" << marble.value("r", 120) << ";"
+                 << marble.value("g", 120) << ";" << marble.value("b", 120)
+                 << "mo\033[0m";
+        } else {
+            cout << " ";
+        }
+    }
+    cout << " /\n";
+
+    // 5. Flat Base
+    cout << "         '-------------'\n";
+}
+
+void view::displayMarbleJar(const nlohmann::json& marbles) const {
+    const int totalMarbles = marbles.is_array() ? static_cast<int>(marbles.size()) : 0;
+    const int fullJars = totalMarbles / jarCapacity;
+    const int activeJarCount = totalMarbles % jarCapacity;
+    const int activeJarOffset = fullJars * jarCapacity;
+
+    // Draw active jar using all-time marble offset
+    drawJarFrame(marbles, activeJarOffset, activeJarCount);
+
+    // Cumulative stats
+    cout << "          " << activeJarCount << " marbles in active jar\n";
+    if (fullJars > 0) {
+        cout << "          + " << fullJars << " full jar" << (fullJars > 1 ? "s" : "") 
+             << " (" << totalMarbles << " total marbles)\n";
+    } else {
+        cout << "          (" << totalMarbles << " total marbles)\n";
+    }
+}
+
+void view::displayAllJars(const nlohmann::json& marbles) const {
+    const int totalMarbles = marbles.is_array() ? static_cast<int>(marbles.size()) : 0;
+    if (totalMarbles == 0) {
+        displayMarbleJar(marbles);
+        return;
+    }
+
+    const int fullJars = totalMarbles / jarCapacity;
+    const int activeJarCount = totalMarbles % jarCapacity;
+
+    // Render every filled jar sequentially
+    for (int i = 0; i < fullJars; ++i) {
+        cout << "\n--- JAR " << (i + 1) << " (FULL: " << jarCapacity << "/" << jarCapacity << ") ---\n";
+        drawJarFrame(marbles, i * jarCapacity, jarCapacity);
+    }
+
+    // Render active jar
+    if (activeJarCount > 0 || fullJars == 0) {
+        cout << "\n--- ACTIVE JAR (" << activeJarCount << "/" << jarCapacity << ") ---\n";
+        drawJarFrame(marbles, fullJars * jarCapacity, activeJarCount);
+    }
+    
+    cout << "\nTotal All-Time Marbles: " << totalMarbles << "\n";
 }
 
 void view::showHomeScreen(const nlohmann::json& marbles) const {
-
     displayMarbleJar(marbles);
 
     cout << "\n";
@@ -40,12 +115,13 @@ void view::showHomeScreen(const nlohmann::json& marbles) const {
     cout << " marbles -log                             log a task\n";
     cout << " marbles -tasks                           view all tasks\n";
     cout << " marbles -delete -TASK_NAME              remove a task\n";
-    cout << " marbles -jar                             view marble jar\n";
+    cout << " marbles -jar                             view active marble jar\n";
+    cout << " marbles -jars                            view all full & active jars\n";
     cout << " marbles -history                         view previous days\n";
     cout << " marbles -history -DD/MM/YY              view one day's history\n";
     cout << "------------------------------------------------------------\n";
 }
-//add <name> <value, in fraction>       add a new habit\n
+
 void view::displayHelpMenu() const {
     showHomeScreen();
 }

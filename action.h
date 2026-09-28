@@ -21,6 +21,7 @@ class action {
 
     public:
         action(){};
+        
         void registerAction(int argc, char* argv[]);
         void deregisterAction();
         void deleteAction(int argc, char* argv[]);
@@ -36,7 +37,7 @@ class action {
         void deleteLoggedAction();
         nlohmann::json toJson() const;
         void loadFromJson(const nlohmann::json& data);
-
+        nlohmann::json allTimeMarbles() const;
 
 };
 

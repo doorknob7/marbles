@@ -345,4 +345,17 @@ void action::loadFromJson(const nlohmann::json& data) {
         storage dataStorage;
         dataStorage.saveData(toJson());
     }
+
+}
+
+nlohmann::json action::allTimeMarbles() const {
+    nlohmann::json allMarbles = nlohmann::json::array();
+    for (const nlohmann::json& log : logs) {
+        if (log.contains("marbles") && log["marbles"].is_array()) {
+            for (const nlohmann::json& marble : log["marbles"]) {
+                allMarbles.push_back(marble);
+            }
+        }
+    }
+    return allMarbles;
 }
