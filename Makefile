@@ -1,8 +1,10 @@
-CXX= g++
-CXXFLAGS = -I. -Iinclude -Wall -std=c++17
-DEPS = marbles.h action.h storage.h controller.h view.h utils.h
-OBJ = main.o marbles.o action.o storage.o controller.o view.o utils.o
+CXX = g++
+CXXFLAGS = -I. -Iinclude -Wall -Wextra -std=c++17
+DEPS = Marbles.h Action.h Storage.h Controller.h View.h Utils.h
+OBJ = Main.o Marbles.o Action.o Storage.o Controller.o View.o Utils.o
 PREFIX ?= $(HOME)/.local
+
+all: marbles
 
 %.o: %.cc $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
